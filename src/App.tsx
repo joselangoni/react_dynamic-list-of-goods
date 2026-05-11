@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { GoodsList } from './GoodsList';
 import { Good } from './types/Good';
@@ -11,31 +11,35 @@ import { getAll, get5First, getRedGoods } from './api/goods';
 export const App: React.FC = () => {
   const [goods, setGoods] = useState<Good[]>([]);
 
+  const handleAllGoods = useCallback(() => {
+    getAll().then(setGoods);
+  }, []);
+
+  const handle5FirstGoods = useCallback(() => {
+    get5First().then(setGoods);
+  }, []);
+
+  const handleRedGoods = useCallback(() => {
+    getRedGoods().then(setGoods);
+  }, []);
+
   return (
     <div className="App">
       <h1>Dynamic list of Goods</h1>
 
-      <button
-        type="button"
-        data-cy="all-button"
-        onClick={() => getAll().then(setGoods)}
-      >
+      <button type="button" data-cy="all-button" onClick={handleAllGoods}>
         Load all goods
       </button>
 
       <button
         type="button"
         data-cy="first-five-button"
-        onClick={() => get5First().then(setGoods)}
+        onClick={handle5FirstGoods}
       >
         Load 5 first goods
       </button>
 
-      <button
-        type="button"
-        data-cy="red-button"
-        onClick={() => getRedGoods().then(setGoods)}
-      >
+      <button type="button" data-cy="red-button" onClick={handleRedGoods}>
         Load red goods
       </button>
 
